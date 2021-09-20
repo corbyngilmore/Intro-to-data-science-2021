@@ -38,3 +38,36 @@ subset(dat0,(Lat<1&Active>0)|`Country/Region` %in% c("Chile", "Peru")) %>% pande
 #' Exclusion of "in" operator
 subset(dat0,(Lat<1&Active>0)|!`Country/Region` %in% c("Chile", "Peru")) %>% pander(split.tables=Inf)
 # vignette('dplyr')(tutorial)
+vignette("dplyr")
+# filter allows you to select a subset of rows in a data frame
+dat0 %>% filter(Confirmed == "1", Active == "1")
+# arrange reorders selected rows
+dat0 %>% arrange(Confirmed, Recovered)
+# puts it in descending order
+dat0 %>% arrange(desc(Lat))
+# slice lets you index rows by their integer location
+dat0 %>% slice(5:10)
+# can use head or tail to start from top or bottom
+dat0 %>% slice_head(n=4)
+dat0 %>% slice_tail(n=10)
+# slice sample randomly selects rows
+dat0 %>% slice_sample(n=8)
+# slice min or max select based on highest or lowest values
+dat0 %>% slice_max(Confirmed, n=5)
+# select lets you zoom in on useful subsets/ columns use ?select for more filters
+dat0 %>% select(`Country/Region`, Confirmed, Recovered)
+# can rename with select but rename command is better
+dat0 %>% rename(Country = `Country/Region`)
+# mutate adds new columns that are functions of old columns
+dat0 %>% mutate(DeathRate = Deaths / Confirmed)
+dat0 %>% 
+  mutate(DeathRate = Deaths / Confirmed) %>% slice_tail(n=20)
+# Transmute lets you keep the new variable
+dat0 %>% transmute(DeathRate = Deaths / Confirmed)
+# Relocate changes column order
+dat0 %>% relocate(Confirmed:Active, .before = `Province/State`)
+# Summarise collapses a data frame to a single row
+dat0 %>% summarise(Confirmed = mean(Confirmed, na.rm = TRUE))
+# can use pipe(%>%) to string multiple commands together
+dat0 %>% group_by(`Country/Region`) %>% select(Confirmed:Deaths) %>% summarise( Confirmed = mean(Confirmed, na.rm = TRUE), Deaths = mean(Deaths, na.rm = TRUE))
+    
