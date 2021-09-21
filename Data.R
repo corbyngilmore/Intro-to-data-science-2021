@@ -4,6 +4,7 @@ library(dplyr)
 library(GGally)
 library(rio)
 library(pander)
+library(maps)
 #' Create data set
 dat0 <- import("covid19cleanedamericas.csv", stringsAsFactors=F);
 #' base R scatterplot matrix
@@ -70,4 +71,42 @@ dat0 %>% relocate(Confirmed:Active, .before = `Province/State`)
 dat0 %>% summarise(Confirmed = mean(Confirmed, na.rm = TRUE))
 # can use pipe(%>%) to string multiple commands together
 dat0 %>% group_by(`Country/Region`) %>% select(Confirmed:Deaths) %>% summarise( Confirmed = mean(Confirmed, na.rm = TRUE), Deaths = mean(Deaths, na.rm = TRUE))
-    
+#How to concatenate Strings
+paste(month.name)    
+paste(month.abb, month.name)
+# sep allows you to add in things between the strings
+paste(month.abb, "1", month.name, sep = ";")
+
+paste(month.abb, month.name, collapse = "','")
+# \n and \t add newline and tab respectively, theyre escape keys
+# cat is useful to show messages on the screen, message is almost identical to cat except its easier to filter
+paste(month.abb, month.name, collapse = "\t") %>% cat 
+dat0<- mutate(dat0, Country = paste0(`Country/Region`,", ", paste0(`Country/Region`, ifelse(`Province/State` == "", "", paste(",", `Province/State`)))))
+
+
+table(dat0$Country)
+#dat0[,'FOO']
+#dat0[['FOO']]
+{length(letters)}
+sqrt('a')
+sqrt({'a'; 4})
+sqrt({ls(all=T); 4})
+sqrt({print(ls(all=T)); 4})
+
+# ls()
+# with(dat0,ls())
+# with(dat0,browser())
+# `Province/State` == ""
+# ifelse(`Province/State` == "", "", paste(",", `Province/State`))
+# paste0(`Country/Region`, ifelse(`Province/State` == "", "", paste(",", `Province/State`)))
+
+#` GGPlot
+ggplot(dat0, aes(x=Date,y=Confirmed))
+ggplot(dat0, aes(x=Date,y=Confirmed, color=`Country/Region`, group=`Country`))+geom_line()+geom_line(aes(y=`Active`), lty=2)+scale_y_log10()
+ggplot(dat0, aes(x=`Country/Region`, weight=`Confirmed`, fill=`Country/Region`, group=`Country`))+geom_bar(position="stack")+ guides(col = guide_legend(ncol = 1))+scale_y_log10()
+ggplot(dat0, aes(x=`Lat`, y=`Long`, size=`Confirmed`))+geom_point()
+map_data("world")$subregion %>%head
+
+#new command
+intersect(map_data("world")$subregion,dat0$`Province/State`)
+dat1 <- group_by(dat0,`Country/Region`,Date) %>% select(c('Confirmed','Deaths','Recovered','Active')) %>% summarise(across(.funs=sum,na.rm=T),.groups = 'keep')
