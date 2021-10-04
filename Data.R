@@ -112,3 +112,23 @@ intersect(map_data("world")$subregion,dat0$`Province/State`)
 dat1 <- group_by(dat0,`Country/Region`,Date) %>% select(c('Confirmed','Deaths','Recovered','Active')) %>% summarise(across(.funs=sum,na.rm=T),.groups = 'keep')
 
 #ggplot2
+#used to generate scatter plots
+ggplot(dat0, aes(x=Date, y=Confirmed, color= `Country/Region`)) + geom_point()
+#Counts overlapping points
+ggplot(dat0, aes(x=Date, y=Confirmed, color= `Country/Region`)) + geom_count()
+#draws smooth histograms, can map y instead of x to flip it
+ggplot(dat0, aes(x=Date, color= `Country/Region`)) + geom_density()
+#draws a dot plot
+ggplot(dat0, aes(x = Deaths, color = `Country/Region`)) +geom_dotplot()
+#Empirical cumulative distribution function, doesnt require tuning parameters and can use categorical and discrete variables
+ggplot(dat0, aes(x = Deaths, color = `Country/Region`)) + stat_ecdf()
+#ellipse
+ggplot(dat0, aes(x=`Date`, y=Deaths)) +geom_point() + stat_ellipse()
+#Draws a function as a continuous curve
+base <-
+  ggplot() +
+  xlim(-5, 5)
+base + geom_function(fun = dnorm, args = list(mean = 2, sd = .5))
+# summarise y values at unique x values
+ConfrimedDeaths <- ggplot(dat0, aes(Confirmed, Deaths)) +geom_point()
+ConfrimedDeaths + stat_summary(fun.data = "mean_cl_boot", colour = "red", size = 2)
