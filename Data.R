@@ -110,3 +110,5 @@ map_data("world")$subregion %>%head
 #new command
 intersect(map_data("world")$subregion,dat0$`Province/State`)
 dat1 <- group_by(dat0,`Country/Region`,Date) %>% select(c('Confirmed','Deaths','Recovered','Active')) %>% summarise(across(.funs=sum,na.rm=T),.groups = 'keep')
+
+#ggplot2
