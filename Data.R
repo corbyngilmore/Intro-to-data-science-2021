@@ -1,6 +1,6 @@
 #'---
 #' title: "[TRIPOD 1] Identify the study as developing and/or validating a multivariable prediction model, the target population, and the outcome to be predicted."
-#' author: 'Author One ^1,✉^, Author Two ^1^'
+#' author: 'Author One ^1^, Author Two ^1^'
 #' abstract: |
 #'  | [TRIPOD 2] Provide a summary of objectives, study design, setting, participants, sample size, predictors, outcome, statistical analysis, results, and conclusions.
 #' documentclass: article
@@ -18,10 +18,13 @@
 #'    toc_float: true
 #' ---
 #'
+#' # Intitialisation
+#' 
 #' Loading R libraries
 #+ init, echo=FALSE, message=FALSE, warning=FALSE
+# Intro ----
 debug <- 0;
-knitr::opts_chunk$set(echo=debug>-1, warning=debug>0, message=debug>0, max.print=42);
+knitr::opts_chunk$set(echo=debug>-1, warning=debug>0, message=debug>0);
 library(ggplot2)
 library(dplyr)
 library(GGally)
@@ -31,7 +34,10 @@ library(maps)
 library(printr)
 options(max.print=42)
 panderOptions('table.split.table',Inf); panderOptions('table.split.cells',Inf);
+#' # Data Reading and plotting
+#' 
 #' Create data set
+# Data set ----
 dat0 <- import("covid19cleanedamericas.csv", stringsAsFactors=F);
 #' base R scatterplot matrix
 #+ scatterplot, cache=TRUE
@@ -43,7 +49,10 @@ head(dat0)
 select(dat0,-'Country/Region') %>% ggpairs()
 #' how to assign value to object and variable
 foo <- 3
+#' # Working with data frames
+#' 
 #' How to select columns 2 through 5:
+# Grouping data ----
 dat0[,c(2:5)] %>% head
 #' How to select columns by name:
 dat0[,c('Long','Confirmed','Date')] %>% head 
@@ -165,5 +174,19 @@ base <-
   xlim(-5, 5)
 base + geom_function(fun = dnorm, args = list(mean = 2, sd = .5))
 # summarise y values at unique x values
-ConfrimedDeaths <- ggplot(dat0, aes(Confirmed, Deaths)) +geom_point()
-ConfrimedDeaths + stat_summary(fun.data = "mean_cl_boot", colour = "red", size = 2)
+CountryDeaths <- ggplot(dat0, aes(`Country/Region`, Deaths)) +geom_point(alpha=0.5, position = position_jitter(width = 0.1))
+CountryDeaths + stat_summary(fun.data = "mean_cl_boot", colour = "red", size=1) + scale_y_log10() + guides(x = guide_axis(angle = 90))
+
+#' # Logical Operators
+#' 
+#' `?base::Logic` more info here
+#' && is for if( ... ) statements, & is for getting back a vector of TRUE and FALSE 
+# Logical Operators ----
+TRUE && TRUE
+c(FALSE, FALSE, TRUE) && c(TRUE, TRUE, FALSE); c(FALSE,FALSE,TRUE) & c(TRUE,TRUE, FALSE)
+c(TRUE,FALSE,TRUE) & c(TRUE,TRUE, TRUE)
+#' Commands for summarizing vectors of logical values:
+any(c(FALSE,FALSE,TRUE,FALSE))
+all(c(FALSE,FALSE,TRUE,FALSE))
+!any(c(FALSE,FALSE,TRUE,FALSE))
+!all(c(FALSE,FALSE,TRUE,FALSE))
