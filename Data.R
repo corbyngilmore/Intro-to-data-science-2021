@@ -18,7 +18,7 @@
 #'    toc_float: true
 #' ---
 #'
-#' # Intitialisation
+#' # Initialization
 #' 
 #' Loading R libraries
 #+ init, echo=FALSE, message=FALSE, warning=FALSE
