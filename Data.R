@@ -143,6 +143,13 @@ table(dat0$Country) %>% cbind
 # ifelse(`Province/State` == "", "", paste(",", `Province/State`))
 # paste0(`Country/Region`, ifelse(`Province/State` == "", "", paste(",", `Province/State`)))
 
+#' sub-setting data frame randomly into training and validation subsets
+Training <- dat0[sample(1:nrow(dat0), 50, replace = FALSE),]
+print(Training)
+Validation <- dat0[sample(1:nrow(dat0), 50, replace = FALSE),]
+print(Validation)
+
+# GGplot ----
 #' GGPlot
 #+ ggplot1, cache=TRUE
 ggplot(dat0, aes(x=Date,y=Confirmed))
