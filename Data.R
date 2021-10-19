@@ -148,6 +148,8 @@ Training <- dat0[sample(1:nrow(dat0), 50, replace = FALSE),]
 print(Training)
 Validation <- dat0[sample(1:nrow(dat0), 50, replace = FALSE),]
 print(Validation)
+#' using split
+split.data.frame(dat0, sample(1:nrow(dat0), 50, replace = FALSE))
 
 # GGplot ----
 #' GGPlot
@@ -184,7 +186,7 @@ base + geom_function(fun = dnorm, args = list(mean = 2, sd = .5))
 CountryDeaths <- ggplot(dat0, aes(`Country/Region`, Deaths)) +geom_point(alpha=0.5, position = position_jitter(width = 0.1))
 CountryDeaths + stat_summary(fun.data = "mean_cl_boot", colour = "red", size=1) + scale_y_log10() + guides(x = guide_axis(angle = 90))
 
-#' # Logical Operators
+#' # Logical Operators 
 #' 
 #' `?base::Logic` more info here
 #' && is for if( ... ) statements, & is for getting back a vector of TRUE and FALSE 
@@ -197,3 +199,47 @@ any(c(FALSE,FALSE,TRUE,FALSE))
 all(c(FALSE,FALSE,TRUE,FALSE))
 !any(c(FALSE,FALSE,TRUE,FALSE))
 !all(c(FALSE,FALSE,TRUE,FALSE))
+
+
+#' devtools::install_github('henningsway/r2anki')
+#' Extract command
+dat0$Confirmed
+
+#' Using logical operators
+dat0[['Confirmed']]
+#' for choosing range
+dat0[,c("Confirmed", "Deaths")]
+xx <- 'Confirmed'
+yy <- dat0[,xx]
+dat0[[xx]]
+dat0$xx
+dat0[,xx]
+xx>1
+dat0[,xx]>1
+sum(dat0[,xx]>1)
+sum(dat0[['Deaths']]>1)
+sum(dat0[['Active']]>1)
+sum(dat0[['Recovered']]>1)
+sum(dat0[['Confirmed']]>1)
+#' looping, for loops, and brackets, count total less than 0
+Bigcolumn <- c('Confirmed', 'Deaths', 'Recovered', 'Active')
+for(ii in Bigcolumn) {print(sum(dat0[,ii]>1))}
+saps <- sapply(Bigcolumn, function(xx){sum(dat0[,xx]>1)})
+laps <- lapply(Bigcolumn, function(xx){sum(dat0[,xx]>1)})
+class(saps)
+class(laps)
+#' using an in line function
+sapply(Bigcolumn, function(xx){sum(dat0[,xx]>1)})
+funtime <- function(xx){sum(dat0[,xx]>1)}
+funtime('Confirmed')
+#' using an existing function
+sapply(Bigcolumn, funtime)
+#' make column names uppercase
+sapply(Bigcolumn, toupper)
+#' With column names
+caps <- sapply(Bigcolumn, function(xx){sum(dat0[,xx]>1)}, simplify = FALSE)
+
+# Creating a function ----
+ggplot(dat0, aes(x=`Lat`, y=`Long`, size=`Confirmed`))+geom_point()
+testfunction <- function(...){}
+testfunction(xx)
