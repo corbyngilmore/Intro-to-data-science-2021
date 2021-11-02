@@ -240,6 +240,12 @@ sapply(Bigcolumn, toupper)
 caps <- sapply(Bigcolumn, function(xx){sum(dat0[,xx]>1)}, simplify = FALSE)
 
 # Creating a function ----
-ggplot(dat0, aes(x=`Lat`, y=`Long`, size=`Confirmed`))+geom_point()
 testfunction <- function(...){}
 testfunction(xx)
+testfunction <- function(...){ggplot(dat0, aes(x=`Lat`, y=`Long`, size=`Confirmed`))+geom_point()}
+testfunction(xx)
+testfunction <- function(...){
+  browser()
+  ggplot(dat0, aes(x=`Lat`, y=`Long`, size=`Confirmed`))+geom_point()}
+testfunction(xx);
+testfunction(xx,yy='Confirmed')
