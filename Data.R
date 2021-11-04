@@ -249,3 +249,39 @@ testfunction <- function(...){
   ggplot(dat0, aes(x=`Lat`, y=`Long`, size=`Confirmed`))+geom_point()}
 testfunction(xx);
 testfunction(xx,yy='Confirmed')
+#' # Interlude: Maps
+#' 
+#' Getting map data by joining COVID case counts to a world map object on
+#' region and subregion (state).
+world <- mutate(dat0
+                ,`Country/Region`=ifelse(`Country/Region`=='US','USA',`Country/Region`)
+                ,MonthDate = round(Date,'months')) %>%
+  select(c('Country/Region','Province/State','MonthDate'
+           ,'Confirmed','Deaths','Recovered','Active')) %>% 
+  group_by(`Country/Region`,`Province/State`,`MonthDate`) %>% 
+  summarise(across(Confirmed=sum(Confirmed),Deaths=sum(Deaths)
+                   ,Recovered = sum(Recovered),Active=sum(Active)),.groups='keep') %>%
+  #ungroup() %>% 
+  inner_join(mutate(map_data('world'),subregion=coalesce(subregion,''))
+             ,.,by=c(region='Country/Region',subregion='Province/State'))
+#' Plotting COVID data (for specific dates) on a map
+subset(world, MonthDate == '2020-06-01') %>% 
+  ggplot(aes(long,lat,group=region)) + 
+  geom_polygon(aes(fill=Active),color='white') + 
+  scale_fill_viridis_c(option='C')
+
+
+# Multy Variant Data Sets ----
+#' Dat1
+#'
+dat1 <- import('https://www.ahrq.gov/sites/default/files/wysiwyg/sdohchallenge/data/SDOH_ZCTA_2011.xlsx');
+head(dat1) %>% pander()
+outcomes <- import("data/SIM_ZCTA_outcomes.csv")
+Zipdat <- left_join(dat1, outcomes)
+Zipdat$sample <- sample(c("Train", "Test"), nrow(Zipdat), replace = TRUE)
+Ziptrain <- subset(Zipdat, sample=="Train")
+unique(Ziptrain$sample)
+table(Ziptrain$sample)
+table(Zipdat$sample)
+POPDat <- lm("RSR~ACS_TOTAL_POP_WT + CEN_POPDENSITY_2010 + CEN_AREALAND_SQM", Ziptrain)
+summary(POPDat)
